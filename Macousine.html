@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D Pink Envelope (Bigger) with Surprise Delay & Animated Background</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Bootstrap (CDN) for layout/responsiveness -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+  />
+
+  <!-- Font Awesome (CDN) for icons (hearts, etc.) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  />
+
+  <!-- Google Fonts: 'Dancing Script' for a sweet, handwritten vibe -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      /* Envelope layout — increased width for a bigger envelope */
+      --envelope-width: 70vmin; /* Larger envelope */
+      --envelope-height: calc(var(--envelope-width) / 1.2); /* Adjusted height */
+
+      /* Colors & palette */
+      --bg-start: #ffb6d9;    /* Start color for gradient */
+      --bg-end: #ffe6f0;      /* End color for gradient */
+      --env-body: #ff99cc;    /* Main envelope pink */
+      --env-flap: #ffb6d9;    /* Flap color (slightly lighter) */
+      --msg-bg: #fff1f7;      /* Message background (pale pink) */
+      --text-color: #6e003a;  /* Dark plum text */
+      --heart-color: #ff4d94; /* Hearts color */
+      --star-color: #ffcce6;  /* Sparkles color */
+
+      /* Fonts & sizes */
+      --msg-font: 'Dancing Script', cursive;
+      --msg-font-size: 2rem;  /* Slightly larger message text if desired */
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      color: var(--text-color);
+      background: linear-gradient(270deg, var(--bg-start), var(--bg-end));
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      overflow: hidden; /* hide scrollbars (optional) */
+    }
+
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .scene {
+      perspective: 1000px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      width: var(--envelope-width);
+      height: var(--envelope-height);
+      transform-style: preserve-3d;
+      transition: transform 1s ease;
+      cursor: pointer;
+    }
+
+    .envelope-body {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--env-body);
+      border-radius: 0 0 6px 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1;
+      overflow: hidden;
+      backface-visibility: hidden;
+    }
+
+    .envelope-flap {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--env-flap);
+      clip-path: polygon(0 0, 100% 0, 50% 50%);
+      transform-origin: 50% 0;
+      transition: transform 0.8s ease;
+      z-index: 2;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      backface-visibility: hidden;
+    }
+
+    .message-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 70%;
+      background: var(--msg-bg);
+      border-radius: 5px;
+      text-align: center;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translate(-50%, -50%) translateY(10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .message-text {
+      font-family: var(--msg-font);
+      font-size: var(--msg-font-size);
+      margin-top: 15%;
+      color: var(--text-color);
+    }
+
+    .decor {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      color: var(--heart-color);
+    }
+    .heart1 { top: 15px; left: 15px; }
+    .heart2 { top: 15px; right: 15px; }
+    .sparkle1 { bottom: 15px; left: 25px; color: var(--star-color); }
+    .sparkle2 { bottom: 15px; right: 25px; color: var(--star-color); }
+
+    .envelope-wrapper.open .envelope-flap {
+      transform: rotateX(-180deg);
+    }
+
+    .envelope-wrapper.open .message-box.show-msg {
+      opacity: 1;
+      transform: translate(-50%, -50%) translateY(0);
+    }
+
+    .envelope-wrapper.open .decor.show-msg {
+      opacity: 1;
+    }
+
+    @keyframes bounce {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .heart1.bouncy {
+      animation: bounce 1s infinite ease-in-out;
+      animation-delay: 0.2s;
+    }
+
+    .heart2.bouncy {
+      animation: bounce 1s infinite ease-in-out;
+      animation-delay: 0.4s;
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+      :root {
+        --envelope-width: 50vmin;
+        --envelope-height: calc(var(--envelope-width) / 1.2);
+        --msg-font-size: 1.5rem; /* Smaller message text on mobile */
+      }
+    }
+
+    @media (max-width: 576px) {
+      :root {
+        --envelope-width: 40vmin;
+        --envelope-height: calc(var(--envelope-width) / 1.2);
+        --msg-font-size: 1.2rem; /* Even smaller message text */
+      }
+
+      .message-text {
+        margin-top: 20%;
+      }
+
+      .decor {
+        font-size: 1rem; /* Smaller hearts and stars */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="scene">
+      <div class="envelope-wrapper" id="envelope">
+        <div class="envelope-body">
+          <div class="message-box" id="messageBox">
+            <i class="fas fa-heart decor heart1" id="heart1"></i>
+            <i class="fas fa-heart decor heart2" id="heart2"></i>
+            <i class="fas fa-star decor sparkle1" id="sparkle1"></i>
+            <i class="fas fa-star decor sparkle2" id="sparkle2"></i>
+
+            <div class="message-text">
+              Thank you for everything Ouardyia, <br />
+              I love you from all my heart!
+            </div>
+          </div>
+        </div>
+        <div class="envelope-flap"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    const messageBox = document.getElementById('messageBox');
+    const heart1 = document.getElementById('heart1');
+    const heart2 = document.getElementById('heart2');
+    const sparkle1 = document.getElementById('sparkle1');
+    const sparkle2 = document.getElementById('sparkle2');
+
+    envelope.addEventListener('click', () => {
+      if (envelope.classList.contains('open')) return;
+
+      envelope.classList.add('open');
+      setTimeout(() => {
+        messageBox.classList.add('show-msg');
+        heart1.classList.add('show-msg', 'bouncy');
+        heart2.classList.add('show-msg', 'bouncy');
+        sparkle1.classList.add('show-msg');
+        sparkle2.classList.add('show-msg');
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
